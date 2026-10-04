@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Exercise 6, Equipping Partners</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================================
+   EXERCISES FAMILY SHELL, CHROME ONLY.
+   Copied verbatim from the frozen e5-client.html (surface 6f7679bb,
+   shell emp-exercise-shell.js 25b52e15, built 2026-09-18).
+   Everything below this comment is the family's own CSS, not a reconstruction.
+   The Exercise 5 working-area classes that follow it in the real file are
+   deliberately NOT included: each exercise brings its own working area.
+   ============================================================================ */
+:root{
+  --brand:#31B0E3; --brand-dark:#1E8FBC; --light-blue:#E6F4FB; --teal:#3FBFBF;
+  --gold:#EFBD19; --gold-light:#FDF4DA; --gold-deep:#7A5C08;
+  --red:#C94246; --green:#0F6E56; --green-bg:#E3F0EC; --navy:#0F2B3C;
+  --stage:#F7F7F7;            /* ruled: one grey across Console, PRM, Exercises */
+  --paper:#FCFBF7;            /* sanctioned: client artefact surface only */
+  --white:#FFFFFF; --border:#E8ECEF; --line2:#F1F4F6;
+  --text:#2D3748; --text2:#5F6B7A; --text3:#A0AEC0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--stage);color:var(--text);-webkit-font-smoothing:antialiased;overflow:hidden}
+.ic{width:15px;height:15px;flex:none;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.iconchip{width:30px;height:30px;border-radius:50%;background:var(--light-blue);color:var(--brand-dark);display:grid;place-items:center;flex:none}
+.mono{font-family:'DM Mono',monospace;font-weight:500;font-variant-numeric:tabular-nums}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+
+.app{height:100vh;display:flex;flex-direction:column}
+
+/* ---- top bar: full-width brand blue, the family's front door ---- */
+.topbar{height:52px;flex:0 0 52px;background:var(--brand);display:flex;align-items:center;padding:0 20px;color:#fff;position:relative;z-index:70}
+.logo{width:169px;height:26px;display:block;flex:0 0 auto}
+.topline{width:1px;height:22px;background:rgba(255,255,255,.34);margin:0 15px}
+.topname{font-size:13px;font-weight:700;line-height:1.15}
+.topname small{display:block;margin-top:2px;font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.72);font-family:'DM Mono',monospace}
+
+.acct{position:relative;flex:none;margin-left:auto}
+.accts{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;padding:4px 8px 4px 4px;border-radius:18px}
+.accts:hover{background:rgba(255,255,255,.14)}
+.acct[open] .accts{background:rgba(255,255,255,.2)}
+.accts::-webkit-details-marker{display:none}
+.acctcaret{color:#fff;font-size:10px;opacity:.85}
+.acctbar{display:flex;flex-direction:column;align-items:flex-end;line-height:1.25;max-width:190px;min-width:0;margin-right:2px}
+.acctbn{font-size:12px;font-weight:500;color:#fff;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.acctbo{font-size:10.5px;color:rgba(255,255,255,.82);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.accti{display:flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.22);color:#fff;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,.35)}
+.accts:hover .accti{background:rgba(255,255,255,.34)}
+.acct[open] .accti{background:#fff;color:#31b0e3;border-color:#fff}
+.acctm{position:absolute;right:0;top:calc(100% + 8px);z-index:60;min-width:190px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:6px;box-shadow:0 8px 26px rgba(15,43,60,.16);white-space:normal}
+.acctwho{font-size:11px;color:var(--text3);padding:6px 8px 7px;border-bottom:1px solid var(--border);margin-bottom:4px;line-height:1.35}
+.acctbuild{display:flex;align-items:center;gap:7px;padding:7px 8px 5px;border-top:1px solid var(--border);margin-top:4px}
+.acctbl{font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3)}
+.btopbuild{font-family:'DM Mono',monospace;font-weight:500;font-size:10px;color:var(--text2);user-select:text}
+
+/* ---- compact Journey rail. Numbers, not names: the work gets the width ---- */
+.body{flex:1;min-height:0;display:flex;position:relative}
+.rail{position:fixed;left:0;top:52px;bottom:0;width:64px;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:14px 0 0;gap:4px;transition:width .28s ease;overflow:hidden;z-index:60}
+.rail.open{position:absolute;left:0;top:0;bottom:0;z-index:70;width:252px;align-items:stretch;padding:14px 12px 0;box-shadow:10px 0 30px rgba(15,43,60,.10)}
+.railtoggle{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--white);color:var(--text3);display:grid;place-items:center;cursor:pointer;margin:0 auto 8px}
+.railtoggle:hover{color:var(--brand-dark);border-color:#CFE7F3}
+.railtoggle .ic{width:14px;height:14px;transition:transform .28s ease}
+.rail.open .railtoggle{margin:0 4px 8px auto}
+.rail.open .railtoggle .ic{transform:rotate(180deg)}
+.railitem{display:flex;align-items:center;gap:11px;border:0;background:none;padding:0;margin:0 auto;cursor:pointer;height:38px;flex:none}
+.rail:not(.open) .railitem{padding-left:1px}
+.rail:not(.open) .railname{display:none}
+.rail:not(.open) .railgroup{display:block;height:16px;padding:0;font-size:0;overflow:hidden}
+.rail.open .railitem{margin:0;padding:0 7px;border-radius:8px;width:100%}
+.rail.open .railitem:hover{background:#F2F7FA}
+.railname{font-size:12.5px;font-weight:600;color:var(--text2);opacity:0;white-space:nowrap;transition:opacity .12s ease}
+.rail.open .railname{opacity:1;transition:opacity .22s ease .14s}
+.railitem .railnum{flex:none}
+.railitem .railnum.current + .railname{color:var(--navy);font-weight:700}
+.railgroup{display:none;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);padding:12px 7px 5px}
+/* ============================================================================
+   EXERCISES PAGE PATTERN. Copied verbatim from the live e2-client.html,
+   which is Lens's "Screen 2", the reference product page.
+   This is the part Marrow wrongly withheld on the third pass. It is NOT
+   Exercise 2's private styling: it is the shared page pattern every exercise
+   surface uses. Paste it after exercises-shell-chrome.css and do not edit it.
+   ============================================================================ */
+.railgroup{display:none;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);padding:12px 7px 4px;white-space:nowrap}
+.rail.open .railgroup{display:block}
+.railnum{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-family:'DM Mono',monospace;font-size:11.5px;font-weight:500;background:#EEF0F3;color:var(--text2)}
+.railnum.done{background:var(--green-bg);color:var(--green);position:relative}
+.railnum.done::after{content:"\2713";position:absolute;bottom:-2px;right:-5px;width:14px;height:14px;border-radius:50%;background:var(--green);color:#fff;font-size:8px;font-weight:800;display:grid;place-items:center;border:2px solid var(--white)}
+.railnum.current{background:var(--brand);color:#fff;box-shadow:0 2px 8px rgba(49,176,227,.35)}
+.railnum.ahead{background:#FAFBFC;color:var(--text3)}
+
+/* ---- workspace: operator chrome on the ruled grey ---- */
+.workspace{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column}
+.stagepad{flex:1;min-height:0;max-width:1560px;width:100%;margin:0 auto;padding:clamp(34px,4.5vh,52px) clamp(26px,3.5vw,56px) 18px;display:flex;flex-direction:column;padding-left:max(clamp(26px,3.5vw,56px),272px)}
+
+.screenhead{display:flex;align-items:flex-end;gap:14px;margin-bottom:clamp(56px,5vh + 20px,74px)}
+.headcopy{flex:1;min-width:0}
+.screenhead h1{font-size:clamp(24px,2vw,30px);font-weight:800;letter-spacing:-.028em;color:var(--navy);line-height:1.12}
+.screenhead .sub{font-size:13px;color:var(--text2);margin-top:7px;max-width:780px;line-height:1.55}
+
+/* ---- the demonstration row: operator card beside client artefact ---- */
+.demo{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);gap:clamp(18px,2.4vw,34px);align-items:start}
+.switch{display:flex;align-items:center;gap:8px;margin:-26px 0 22px}
+.switchlabel{font-size:11.5px;color:var(--text3);margin-right:4px}
+.swpill{font:inherit;font-size:12px;font-weight:600;color:var(--text2);background:var(--white);border:1px solid var(--border);border-radius:99px;padding:6px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.swpill:hover{border-color:#CFE7F3;color:var(--brand-dark)}
+.swpill.on{border-color:var(--brand);color:var(--navy);font-weight:700;box-shadow:inset 0 0 0 1px var(--brand)}
+.swpill .swtick{width:13px;height:13px;border-radius:50%;background:var(--green-bg);color:var(--green);font-size:8px;font-weight:800;display:grid;place-items:center}
+.quietline{font-size:12.5px;color:var(--text2);line-height:1.6}
+.quietline a{color:var(--brand-dark);font-weight:700;text-decoration:none}
+.heardline{font-size:12px;color:var(--text3);line-height:1.55;margin-top:2px}
+.proplabel{font-size:10.5px;font-weight:700;letter-spacing:.02em;color:var(--brand-dark);margin-top:6px}
+.propsaid{display:flex;gap:12px}
+.propsaid .qbar{width:3px;border-radius:2px;background:var(--brand);flex:none}
+.corrbox{width:100%;font:inherit;font-size:15px;color:var(--navy);font-weight:600;border:1.5px solid var(--brand);border-radius:9px;padding:9px 11px;margin:4px 0 2px}
+.gsection .said + .said{margin-top:8px}
+.card{background:var(--white);border:1px solid var(--border);border-radius:13px;box-shadow:0 1px 3px rgba(15,43,60,.05)}
+
+/* operator side: white card on grey, judgement carried by the gold family */
+.opcard{padding:20px 24px 20px;display:flex;flex-direction:column;gap:12px;border-top:3px solid var(--brand)}
+.ophead{display:flex;align-items:baseline;gap:12px}
+.opkind{font-size:10.5px;font-weight:700;color:var(--text2);letter-spacing:.11em;text-transform:uppercase}
+.state{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700}
+.state i{width:7px;height:7px;border-radius:50%;flex:none}
+.state.judge{color:var(--gold-deep)}
+.state.judge i{background:var(--gold)}
+.state.ok{color:var(--green)}
+.state.ok i{background:var(--green)}
+.pill{display:inline-block;font-size:10px;font-weight:700;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.pill.judge{background:var(--gold-light);color:var(--gold-deep)}
+.pill.ok{background:var(--green-bg);color:var(--green)}
+.pill.info{background:var(--light-blue);color:var(--brand-dark)}
+.proposition{font-size:clamp(23px,1.8vw,27px);line-height:1.3;color:var(--navy);font-weight:750;letter-spacing:-.024em;max-width:21em;margin:4px 0 2px}
+.judgeq{font-size:13.5px;color:var(--text2)}
+.actions{display:flex;align-items:center;gap:8px;margin-top:auto}
+.primary{background:var(--brand);color:#fff;border-radius:9px;padding:10px 18px;font-size:12.5px;font-weight:700;display:inline-flex;align-items:center;gap:7px}
+.primary .ic{width:14px;height:14px}
+.primary:hover{background:var(--brand-dark)}
+.ghost{background:var(--white);border:1.5px solid var(--navy);color:var(--navy);border-radius:9px;padding:9px 16px;font-size:12.5px;font-weight:700}
+.savequiet{margin-left:auto;font-size:10.5px;color:var(--text3);min-height:14px}
+
+/* client artefact: the one cream surface. Warm paper the client owns.
+   Renders only confirmed truth. Absent content means absent containers. */
+.artefact{background:var(--paper);border:1px solid #E5E0D5;border-radius:15px;box-shadow:0 4px 14px rgba(15,43,60,.05);overflow:hidden;display:flex;flex-direction:column}
+.artstrap{background:var(--brand);color:#fff;padding:7px 20px;font-size:10.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase}
+.arthead{background:var(--navy);color:#fff;padding:12px 20px 13px}
+.arthead h2{font-size:clamp(20px,1.5vw,24px);font-weight:750;letter-spacing:-.022em}
+.artbody{padding:18px 20px 19px;display:flex;flex-direction:column;gap:15px;flex:1}
+.gsection{padding:2px 4px}
+.gsection + .gsection{border-top:1px solid #ECE7DB;padding-top:15px}
+.gsection .ghead{display:flex;align-items:center;gap:11px}
+.gsection .slab{font-size:14px;font-weight:700;color:var(--brand-dark);letter-spacing:-.01em}
+.gsection li{font-size:13.5px;line-height:1.55;color:var(--navy);padding-left:3px;margin-top:8px}
+.gsection li::marker{color:var(--brand)}
+.gsection ul{padding-left:22px;margin:6px 0 0 38px}
+.gsection .said{display:flex;gap:12px;margin:10px 0 2px 41px}
+.gsection .said .qbar{width:3px;border-radius:2px;background:var(--brand);flex:none}
+.gsection .said p{font-size:16px;line-height:1.5;color:var(--navy);font-weight:650;letter-spacing:-.012em}
+/* ====================== END OF THE PASTED PRODUCT PATTERN ====================== */
+
+/* ============================================================================
+   EXERCISE 6, LOCAL ADDITIONS ONLY.
+   Everything above this line is the frozen chrome and the shared page pattern,
+   pasted verbatim and unedited.
+
+   Exercise 6 is a client artefact surface, so the ten slot two column contract
+   is suspended for it under the exception ruled by Lens on 20 September. There
+   is one document card across the working width and the section navigation
+   lives inside it. Nothing below invents a page layout. Layout is never new.
+
+   The two chip devices are deliberately separate classes so that nobody
+   unifies them later:
+     .switch / .swpill   page level switcher, above the working area
+     .docnav / .docpill  document section navigation, inside the card
+   Gold never touches either device.
+   ============================================================================ */
+
+/* 1. The account menu's buttons. Written by the shell in the product and named
+      in the chrome markup, but their rules sit outside the copied block. */
+.acctb{display:block;width:100%;text-align:left;padding:7px 8px;border-radius:7px;font-size:12px;font-weight:500;color:var(--text);line-height:1.3}
+.acctb:hover{background:#F2F7FA}
+.acctsub{display:block;margin-top:2px;font-size:10.5px;font-weight:400;color:var(--text3);line-height:1.35}
+
+/* 2. TWO EXPLICIT RENDERINGS, not one mixed set with partner material hidden.
+      Every section carries both data-aud and data-sec, and a section that
+      appears in both readings is written out twice, once per reading. The
+      public frame will render the client set only, so it has no route to
+      partner material even by mistake. A view is a transparent wrapper, so its
+      sections stay siblings of the provenance foot and .gsection still rules. */
+.view{display:none}
+.view[data-active]{display:contents}
+
+/* 3. The single document card takes the height the stage leaves it.
+      NINTH PASS, AND THIS REVERSES THE EARLIER SETTING. Ruled by Lens on
+      20 September: 1280 and above is the design target, and the copy is written
+      for that width. At 1280 and above the document fits inside the card and
+      nothing clips and nothing scrolls internally. Below 1280 the document body
+      scrolls internally rather than clipping, so that copy worth reading is not
+      cut back to the narrowest budget and narrower widths degrade gracefully.
+      The page itself still never scrolls in either axis at any width. Only
+      .artbody scrolls.
+
+      WHY THE RULE IS overflow-y:auto RATHER THAN A MEDIA QUERY SWITCH. The
+      threshold is a design target, not a licence to clip above it. auto shows
+      no scrollbar at all while the document fits, so at the design target the
+      reader sees one uninterrupted page; when the card is shorter than the
+      document, whether because the window is narrow or because it is short,
+      the document scrolls instead of losing its last lines. Restoring
+      overflow:hidden above 1280 would bring back the clipping the ruling
+      removed, so the hidden setting is not reinstated at any width. The
+      @media rule below states the threshold for the record and tightens the
+      rhythm a little as the width falls away, which is the graceful
+      degradation the ruling asks for. */
+.stagepad > .artefact{flex:1;min-height:0;position:relative}
+.artbody{overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:15px 20px 16px;gap:13px}
+@media (max-width:1279.98px){
+  .artbody{gap:11px}
+}
+
+/* 4. The navy header, a little shallower again now that the section navigation
+      below it is tightened. The shell proportions above it are untouched. */
+.arthead{padding:9px 20px 10px}
+
+/* 5. DOCUMENT SECTION NAVIGATION. The second named chip device. Same pill
+      dimensions as the page level switcher, 12px text with 6 by 14 padding,
+      deliberately not enlarged. It reads quieter because it is grouped tightly
+      to the left with less air above, below and between. No label in front:
+      its place under the title says what it is. Active is solid navy. */
+.docnav{display:flex;align-items:center;gap:6px;padding:8px 20px 9px;border-bottom:1px solid #ECE7DB;flex-wrap:wrap;row-gap:6px}
+.docnav[hidden]{display:none}
+.docpill{font:inherit;font-size:12px;font-weight:600;color:var(--text2);background:var(--white);border:1px solid var(--border);border-radius:99px;padding:6px 14px;cursor:pointer;white-space:nowrap}
+.docpill:hover{border-color:#CFE7F3;color:var(--brand-dark)}
+.docpill.on{background:var(--navy);border-color:var(--navy);color:#fff;font-weight:700}
+
+/* 6. THE PRODUCT AUTHORING LAYER. Everything marked .authoring belongs to the
+      firm while it is writing, never to the client who receives the page: the
+      provenance line, View sources, the judgement tint, the pencil and any
+      readiness note. The public frame drops .authoring wholesale along with the
+      rail, the account menu, the rendering switch and the page status, which is
+      why none of it is allowed to carry client facing meaning. */
+.provfoot{margin-top:auto;padding:9px 4px 0;border-top:1px solid #ECE7DB;font-size:11px;color:var(--text3);line-height:1.55}
+.srclink{font:inherit;font-size:11px;font-weight:700;color:var(--brand-dark);padding:0;white-space:nowrap}
+.srclink:hover{color:var(--navy)}
+
+/* 7. A held slot. The firm sees what is still to be settled and the slot is
+      preserved, without inventing content and without the authoring prompt
+      ever reaching the page a client would read. */
+.heldslot{display:flex;align-items:flex-start;gap:9px;margin:9px 0 0 41px;padding:7px 11px 8px;background:var(--gold-light);border-radius:8px}
+.heldslot .state{flex:none;margin-top:1px}
+.heldslot p{font-size:11.5px;line-height:1.5;color:var(--gold-deep)}
+
+/* 8. The sources drawer, opened only when the firm asks for it. It is never
+      on screen beside the document. */
+.srcpanel{position:absolute;top:0;right:0;bottom:0;width:min(370px,54%);background:var(--white);border-left:1px solid var(--border);box-shadow:-12px 0 32px rgba(15,43,60,.10);display:flex;flex-direction:column;z-index:5}
+.srcpanel[hidden]{display:none}
+.srchead{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--border);font-size:10.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--text2)}
+.srcx{margin-left:auto;font-size:11.5px;font-weight:600;color:var(--text2);letter-spacing:0;text-transform:none}
+.srcx:hover{color:var(--brand-dark)}
+.srcbody{padding:15px 16px 18px;overflow:auto;display:flex;flex-direction:column;gap:14px}
+.srcitem{font-size:12.5px;line-height:1.6;color:var(--text2)}
+.srcitem b{display:block;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--brand-dark);margin-bottom:3px}
+
+/* 9. Copy set under a .ghead follows the 41px rhythm .gsection .said sets. */
+.gsection .ghead + .quietline,
+.gsection .ghead + .heardline,
+.gsection .ghead + .proplabel{margin-left:41px}
+.gsection .ghead + .quietline,
+.gsection .ghead + .heardline{margin-top:8px}
+.gsection .proplabel{margin-left:41px}
+.gsection ul + .proplabel{margin-top:8px}
+/* NINTH PASS. A little more air in front of a labelled group than in front of
+   a run-on label, so the partner reading breaks into parts a reader can take
+   one at a time rather than arriving as one unbroken face of text. */
+.gsection .quietline + .proplabel{margin-top:11px}
+.gsection ul + .proplabel.arclabel{margin-top:13px}
+.gsection .proplabel + ul{margin-top:2px}
+.gsection ul + .heardline,
+.gsection .said + .heardline,
+.gsection .arche + .heardline{margin:6px 0 0 41px}
+.gsection .quietline{margin-left:41px}
+.gsection ul + .quietline{margin-top:7px}
+.gsection .ghead .slab{flex:none}
+.gsection .ghead .state{margin-left:auto}
+.gsection .ghead .heardline{margin-left:auto;text-align:right;margin-top:0}
+.gsection .ghead .state + .heardline{margin-left:14px}
+
+/* 10. Several heard lines under one quote bar. The five lines a partner is
+       likely to hear are one utterance set, not five separate quotations, and
+       at this width they sit in two columns without crowding. */
+.saidstack{display:flex;gap:12px;margin:8px 0 2px 41px}
+.saidstack .qbar{width:3px;border-radius:2px;background:var(--brand);flex:none}
+.saidstack .lines{flex:1;min-width:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:4px 30px}
+.saidstack p{font-size:14px;line-height:1.5;color:var(--navy);font-weight:650;letter-spacing:-.012em}
+
+/* 11. Two states of the same business, side by side, so the change is read in
+       one movement rather than remembered across a scroll. */
+.shift{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 28px;margin:6px 0 0 41px}
+.shift ul{margin:2px 0 0 0;padding-left:19px}
+.shift li{margin-top:6px}
+.shift .proplabel{margin-left:0}
+
+/* 12. THE ARCHETYPE CASE, REBUILT ON THE NINTH PASS. Ruled a design break by
+       Lens on 20 September: it had been a four column slab, the densest thing
+       in the set and the only four column arrangement anywhere, so it read as a
+       different design language from the other nine sections. Every piece of
+       the content is kept and only the geometry is calmed. It is now a two
+       column labelled sequence, which is the arrangement the rest of the
+       document already uses in Who it's for: short labelled items in Exercise
+       3's own field order, aligned vertically down the page a pair at a time,
+       with the air a list item is given rather than the air a table cell is.
+       Body copy is at reading scale rather than shrunk to fit a column.
+       A brand blue label is material carried from Exercise 2 or Exercise 3.
+       A gold label with a gold dot is drafted and waiting on Lila's judgement. */
+.arche{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:9px 22px;margin:9px 0 0 41px;align-items:baseline}
+.afield{display:contents}
+.afield .aflabel{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--brand-dark);line-height:1.5}
+.afield p{font-size:13px;line-height:1.5;color:var(--navy)}
+.afield.judge .aflabel{color:var(--gold-deep)}
+.afield.judge .aflabel::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);margin-right:5px;vertical-align:1px}
+.afield .afsaid{font-weight:650;letter-spacing:-.008em}
+/* below the design target the label column folds under its value, so the
+   sequence becomes single column rather than squeezing the value into a
+   sliver. This is the graceful degradation, not a second design. */
+@media (max-width:1279.98px){
+  .arche{gap:8px 20px}
+}
+@media (max-width:1060px){
+  .arche{grid-template-columns:minmax(0,1fr);gap:11px}
+  .afield{display:block}
+  .afield .aflabel{display:block;margin-bottom:1px}
+}
+
+/* 13. The pencil, on the drafted blocks only. Gold means captured and waiting
+       on your judgement, so the pencil is exactly where the judgement is. */
+.editable{position:relative}
+.pen{position:absolute;top:0;right:0;width:25px;height:25px;border-radius:7px;border:1px solid var(--border);background:var(--white);color:var(--text3);display:grid;place-items:center;opacity:0;transition:opacity .14s,color .14s,border-color .14s}
+.editable:hover .pen,.editable:focus-within .pen,.editable.open .pen{opacity:1}
+.pen:hover,.editable.open .pen{color:var(--brand-dark);border-color:#CFE7F3;background:var(--light-blue)}
+.pen svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.editable.open{outline:1.5px solid var(--brand);outline-offset:5px;border-radius:9px}
+.editrow{display:flex;align-items:center;gap:8px;margin:10px 0 0 41px}
+.editrow button{font-size:11.5px;font-weight:600;border-radius:7px;padding:5px 12px;border:1px solid var(--border);background:var(--white);color:var(--text2)}
+.editrow button.keep{background:var(--navy);border-color:var(--navy);color:var(--white)}
+[contenteditable="true"]{outline:none;cursor:text}
+
+/* PAGE TITLE WIDTH. Lila, 20 September: the top line should not break on a
+   smaller screen until it reaches the right edge of the document card below.
+   It was breaking early because the page status was a flex sibling of
+   .headcopy inside .screenhead, so it claimed its content width and squeezed
+   the heading. The status now sits beside the supporting line instead, at the
+   same height it had before, and the title has the full working width. On a
+   narrow screen the status wraps below the supporting line rather than
+   narrowing the title. No canonical class is redefined. */
+.headfoot{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.headfoot .state{flex:none;white-space:nowrap}
+
+/* ============================================================================
+   EIGHTH PASS. VOICE, COMPOSITION AND EVIDENCE.
+   Ruled by Lens, 20 September. Voice conversion is presentation, not mutation:
+   the client reading says the confirmed truth in the second person while the
+   source sentence behind it is unchanged and still quoted verbatim in the
+   sources drawer. Every converted line is therefore drafted and carries the
+   gold judgement mark until Lila accepts it.
+
+   Visual variety below is typography, spacing and arrangement only. Not one
+   rule here creates a card or a container. There is still exactly one card on
+   this screen. Each client section is given a single dominant visual idea so
+   that five sections do not read as five identical bullet lists:
+
+     1  what it helps with   one framing sentence in emphasis type, then prose
+     2  who it's for         two facing columns, strong fit against weaker fit
+     3  what changes         stacked statement and subline pairs
+     4  evidence             two large mono figures, then quiet supporting lines
+     5  the process          a numbered ladder with a linking accent
+
+   Blue is spent on section headings and directional accents, nothing else.
+   Body copy stays at reading scale. Large type is reserved for the solution
+   title, the evidence figures and the one framing sentence.
+   ============================================================================ */
+
+/* 14. THE STANDING DESCRIPTION AND THE TIMEFRAME, outside the five sections
+       and at the top of BOTH renderings on the ninth pass. A reader's first
+       question after the title is how long this takes, and a partner is asked
+       it as often as a client is, so it is answered once beneath the title area
+       rather than repeated inside a section or left to be hunted for. It is
+       written out once per reading, so the two renderings stay separate and the
+       public frame still has no route to partner wording. */
+.audblock{display:none}
+.audblock[data-active]{display:block}
+.lede{padding:0 4px 11px;border-bottom:1px solid #ECE7DB}
+.ledeline{font-size:15px;line-height:1.42;color:var(--navy);font-weight:650;letter-spacing:-.014em;max-width:78em}
+.ledemeta{display:flex;align-items:center;gap:14px;margin-top:7px;flex-wrap:wrap}
+.ledemeta .dur{font-size:12.5px;color:var(--text2)}
+.ledemeta .dur .mono{color:var(--navy);font-size:12.5px}
+
+/* 15. SECTION ONE. Prose, with the framing sentence carrying the weight. No
+       list at all, so the section that opens the document does not look like
+       the four behind it. */
+.framing{font-size:15.5px;line-height:1.5;font-weight:650;color:var(--navy);letter-spacing:-.014em;margin:8px 0 0 41px;max-width:48em}
+.prose p{font-size:13.5px;line-height:1.62;color:var(--navy);margin:10px 0 0 41px;max-width:62em}
+
+/* 16. SECTION TWO. Two facing columns. The weaker side is set in the quiet
+       grey so the comparison is read without either side shouting. */
+.shift .proplabel.quiet{color:var(--text3)}
+.shift ul.quiet li{color:var(--text2)}
+.shift ul.quiet li::marker{color:var(--text3)}
+.shift .fitlead{font-size:13px;line-height:1.5;color:var(--navy);font-weight:650;margin-top:3px}
+.shift .fitlead.quiet{color:var(--text2)}
+
+/* 17. SECTION THREE. Statement and subline pairs, stacked with air between
+       them. The blue dot is the only ornament and it is directional. */
+.gains{margin:9px 0 0 41px;display:flex;flex-direction:column;gap:11px}
+.gain{display:flex;gap:11px}
+.gain .gdot{width:6px;height:6px;border-radius:50%;background:var(--brand);flex:none;margin-top:6px}
+.gain b{display:block;font-size:14.5px;font-weight:700;color:var(--navy);letter-spacing:-.014em}
+.gain span{display:block;font-size:12.5px;line-height:1.5;color:var(--text2);margin-top:2px}
+
+/* 18. SECTION FOUR. The figures are the dominant idea, so they are the only
+       enlarged numerals on the page. Numerals and symbols, per the ruling, and
+       DM Mono because they are numbers. */
+.figs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 30px;margin:6px 0 0 41px}
+.fignum{display:block;font-size:29px;line-height:1.05;color:var(--navy);letter-spacing:-.02em}
+.fig p{font-size:12.5px;line-height:1.45;color:var(--text2);margin-top:3px}
+.credits{margin:9px 0 0 41px;display:flex;flex-direction:column;gap:6px}
+.credit{font-size:13px;line-height:1.5;color:var(--navy);display:flex;gap:10px}
+.credit .cdot{width:4px;height:4px;border-radius:50%;background:var(--brand);flex:none;margin-top:8px}
+
+/* 19. THE QUOTE WINDOW. A testimonial requires recorded approval before it is
+       published, so the window is empty by default. It reuses the quote bar
+       the document already owns rather than introducing a device. The whole
+       window is .authoring, which is how the public rendering omits the area
+       entirely until approved proof exists. No quote is invented and no person
+       is named. */
+.said.empty p{font-size:13.5px;font-weight:600;color:var(--text3);letter-spacing:0;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.said.empty .qnote{display:block;font-size:11.5px;font-weight:400;line-height:1.45;color:var(--text3);margin-top:3px;max-width:60em}
+
+/* 20. FURTHER INFORMATION. Only publicly resolvable links belong here, because
+       the sendable page opens for someone who is not signed in. While the
+       links are still the firm's to supply the whole group is .authoring, so
+       nothing unfinished reaches a client. */
+.further{margin:9px 0 0 41px}
+.further .proplabel{margin:0 0 1px}
+.flink{display:flex;align-items:center;gap:9px;margin-top:4px;font-size:12px;color:var(--navy)}
+.flink .ic{width:14px;height:14px;color:var(--brand-dark)}
+.flink .pill{margin-left:2px}
+
+/* 21. SECTION FIVE. A numbered ladder. The linking line is the directional
+       accent that makes it a sequence rather than a list. */
+.steps{margin:9px 0 0 41px}
+.step{display:flex;gap:12px;padding-bottom:6px;position:relative}
+.step:last-of-type{padding-bottom:0}
+.step::before{content:"";position:absolute;left:11px;top:25px;bottom:0;width:1px;background:#CFE0EA}
+.step:last-of-type::before{display:none}
+.stepn{width:23px;height:23px;border-radius:50%;background:var(--light-blue);color:var(--brand-dark);font-size:11px;display:grid;place-items:center;flex:none;position:relative;z-index:1}
+.step b{display:block;font-size:13.5px;font-weight:700;color:var(--navy);letter-spacing:-.01em}
+.step p{font-size:12.5px;line-height:1.45;color:var(--text2);margin-top:2px}
+.steps + .quietline{margin-top:7px;color:var(--text2)}
+.nextstep{display:flex;gap:10px;margin:8px 0 0 41px;align-items:flex-start}
+.nextstep .ic{width:15px;height:15px;color:var(--brand-dark);margin-top:2px}
+.nextstep p{font-size:13.5px;line-height:1.55;color:var(--navy);font-weight:600}
+
+/* 22. The verbatim source quotation in the drawer. Voice conversion is
+       presentation, so the sentence Lila confirmed is shown here word for word
+       beside the converted line the client reads. */
+.srcq{display:block;margin-top:5px;padding-left:10px;border-left:2px solid var(--border);color:var(--navy);font-size:12px;line-height:1.55}
+
+/* ============================================================================
+   TENTH PASS. 20 September 2026. Prism's diagnosis, ruled by Lens.
+   The governing refinement: one solution header, one status system, five
+   changing sections. The header was already rendered once; what was repeated
+   was the status. Everything below is subtraction or restraint. Nothing here
+   redefines a canonical class in place; each rule states what it corrects.
+   ============================================================================ */
+
+/* A. ONE STATUS SYSTEM, AND IT LIVES OUTSIDE THE CREAM. The gold status labels
+      and the provenance footers are gone from inside the card. This line takes
+      their place, names the sections still waiting, and keeps the sources
+      drawer reachable. It is .authoring, so the sendable page has none of it. */
+.judgestrip{display:none;margin:0 0 11px}
+.judgestrip[data-active]{display:block}
+.jrow{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.jchip{font:inherit;font-size:11.5px;font-weight:650;color:var(--gold-deep);background:var(--gold-light);border:1px solid #F0E4C2;border-radius:99px;padding:4px 11px;cursor:pointer}
+.jchip:hover{border-color:var(--gold)}
+.jchip.on{border-color:var(--gold-deep)}
+.jnote{font-size:11.5px;line-height:1.5;color:var(--text2);margin-top:5px}
+.judgestrip .srclink{margin-left:auto}
+
+/* B. THE READING MEASURE. Prism: section one runs too wide at full size. Set
+      to roughly eighty characters. Columns, figures and the ladder keep the
+      full width, because they are not continuous prose. */
+.ledeline{max-width:48em}
+.framing{max-width:38em}
+.prose p{max-width:42em}
+
+/* C. A WEAKER FIT IS NOT A DISABLED STATE. The exclusion column carries the
+      most decision useful sentences on the page and was set so pale it read as
+      switched off. Body goes back to full contrast; the two sides are told
+      apart by their headings, which is what headings are for. */
+.shift ul.quiet li{color:var(--navy)}
+.shift ul.quiet li::marker{color:var(--text3)}
+.shift .fitlead.quiet{color:var(--navy)}
+.shift .proplabel.quiet{color:var(--text2)}
+
+/* D. ONE SHARED SPACING TOKEN from a section heading to its first content.
+      Prism found Evidence a few pixels tighter than the rest and asked for a
+      bind rather than a local correction. This is the bind. */
+:root{--secgap:9px}
+.framing,.shift,.gains,.figs,.steps,.arche,.saidstack{margin-top:var(--secgap)}
+
+/* E. STABLE CARD HEIGHT. The card already fills the stage, so switching
+      section does not move it. Below the design target the minimum keeps a
+      short section from collapsing the card and the body scrolls, which is the
+      internal scroll Lens allowed. Above the target nothing is clipped, so the
+      open question about short windows stays open rather than being answered
+      by a rule nobody ruled. */
+@media (max-width:1279.98px){ .artbody{min-height:470px} }
+
+/* F. THE SUPPLY CONTROL. A gold pill reading "Link to supply" was product
+      state sitting in the client's document. Gold is reserved for judgement,
+      and this is not judgement, it is an empty slot. */
+.addctl{font:inherit;font-size:11px;font-weight:650;color:var(--brand-dark);background:transparent;border:1px dashed #CFE0EA;border-radius:7px;padding:3px 9px;cursor:pointer}
+.addctl:hover{background:var(--light-blue);border-style:solid}
+
+/* G. THE PROCESS BOUNDARY. Prism: the four to six weeks belongs to the
+      workshop, and the page must not imply it covers everything that follows.
+      Two quiet labels and one hairline, no new container. */
+.grouplab{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text3);margin:0 0 5px}
+.grouplab.later{margin-top:10px;padding-top:10px;border-top:1px solid #E6EDF1}
+
+/* H. THE QUOTE WINDOW AND LEARN MORE, kept as client content and emptied of
+      machinery. Both are distinct parts of Evidence rather than a continuation
+      of the credits above them, so each gets its own step of air. */
+.said.empty p{font-weight:600;color:var(--text3)}
+.said.empty{margin-top:15px}
+.further{margin-top:16px}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-pen" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13.6 3.1a1.7 1.7 0 0 1 2.4 2.4L7.4 14.1l-3.2.8.8-3.2z"/></symbol>
+  <symbol id="i-mark" viewBox="0 0 24 24"><path d="M4 20V9l8-5 8 5v11"/><path d="M9 20v-6h6v6"/></symbol>
+  <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M16 5.6a3.2 3.2 0 0 1 0 6.3"/><path d="M17.5 14.9c2 .7 3.3 2.4 3.3 4.6"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.6l2.5 5.2 5.6.8-4 4 .9 5.6L12 16.5 7 19.2l1-5.6-4.1-4 5.6-.8z"/></symbol>
+  <symbol id="i-ear" viewBox="0 0 24 24"><path d="M7 9a5 5 0 0 1 10 0c0 3-3 3.6-3 6a2.6 2.6 0 0 1-5 .3"/><path d="M10.4 9a1.7 1.7 0 0 1 3.3 0"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15"/><path d="M13.5 6.5L20 12l-6.5 5.5"/></symbol>
+  <symbol id="i-steps" viewBox="0 0 24 24"><path d="M4 19h4v-4"/><path d="M10 15h4v-4"/><path d="M16 11h4V7"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13.5a3.5 3.5 0 0 0 5 0l2.5-2.5a3.5 3.5 0 0 0-5-5L11.2 7.3"/><path d="M14 10.5a3.5 3.5 0 0 0-5 0L6.5 13a3.5 3.5 0 0 0 5 5l1.3-1.3"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M6 21V4"/><path d="M6 5h11l-2 3.5L17 12H6z"/></symbol>
+</svg>
+
+<div class="app">
+
+  <!-- =============== FROZEN CHROME, markup as exercises-shell-chrome.html =============== -->
+  <header class="topbar">
+    <!-- PLACEHOLDER WORDMARK. The product carries the emPartner logo as a base64
+         SVG data URI on <img class="logo" alt="emPartner" src="..."> at this exact
+         position and size. Substitute that data URI; nothing else here changes. -->
+    <svg class="logo" viewBox="0 0 169 26" role="img" aria-label="emPartner">
+      <text x="0" y="19" font-family="Inter,sans-serif" font-size="17" font-weight="800" fill="#FFFFFF" letter-spacing="-0.4">em</text>
+      <text x="25" y="19" font-family="Inter,sans-serif" font-size="17" font-weight="500" fill="rgba(255,255,255,.92)" letter-spacing="-0.4">Partner</text>
+      <circle cx="93" cy="8" r="2.1" fill="rgba(255,255,255,.85)"/>
+    </svg>
+    <div class="topline"></div>
+    <div class="topname" id="topName">Exercise 6<small>Equipping Partners</small></div>
+    <details class="acct">
+      <summary class="accts" title="Account">
+        <span class="acctbar">
+          <span class="acctbn">Lila</span>
+          <span class="acctbo">Emple Australia</span>
+        </span>
+        <span class="accti">L</span>
+        <span class="acctcaret">&#9662;</span>
+      </summary>
+      <div class="acctm">
+        <div class="acctwho">Signed in as Lila</div>
+        <div class="acctwho acctsub2">Emple Australia</div>
+        <button type="button" class="acctb" data-emp-resetview>Reset this view
+          <span class="acctsub">Reloads from the database. Nothing you have typed is lost.</span>
+        </button>
+        <button type="button" class="acctb" data-emp-signout>Sign out</button>
+        <div class="acctbuild" title="Build stamp. Compare with what the build printed.">
+          <span class="acctbl">Build</span>
+          <span class="btopbuild">e6-solution shape &middot; shell 25b52e15 &middot; 2026-09-20</span>
+        </div>
+      </div>
+    </details>
+  </header>
+
+  <div class="body">
+
+    <aside class="rail" id="rail" aria-label="Journey">
+      <button class="railtoggle" id="railToggle" aria-label="Expand the journey" aria-expanded="false"><svg class="ic" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <!-- Rendered in the product by emp-exercise-shell.js renderRail() from the shared
+           RAIL config. Reproduced statically here in the collapsed 64px state. -->
+      <div class="railgroup">Getting ready</div>
+      <button class="railitem"><span class="railnum done">P</span><span class="railname">Preparation</span></button>
+      <div class="railgroup">Your business</div>
+      <button class="railitem"><span class="railnum done">1</span><span class="railname">Commercial Model</span></button>
+      <button class="railitem"><span class="railnum done">2</span><span class="railname">Referral Triggers</span></button>
+      <div class="railgroup">Your partners</div>
+      <button class="railitem"><span class="railnum done">3</span><span class="railname">Partner Ecosystem</span></button>
+      <button class="railitem"><span class="railnum done">4</span><span class="railname">Current Opportunities</span></button>
+      <div class="railgroup">Your value</div>
+      <button class="railitem"><span class="railnum done">5</span><span class="railname">Ideal Clients</span></button>
+      <button class="railitem" aria-current="page"><span class="railnum current">6</span><span class="railname">Equipping Partners</span></button>
+      <button class="railitem"><span class="railnum ahead">7</span><span class="railname">Value Exchange</span></button>
+      <button class="railitem"><span class="railnum ahead">8</span><span class="railname">Exclusive Offers</span></button>
+      <div class="railgroup">Getting started</div>
+      <button class="railitem"><span class="railnum ahead">9</span><span class="railname">Partner Action Plan</span></button>
+    </aside>
+
+    <!-- =============== THE WORKING AREA ===============
+         A client artefact, so the ten slot two column contract is suspended. One
+         document card across the working width, one canonical solution truth,
+         and two explicitly written renderings of it. The page level switcher
+         chooses the rendering; the section navigation inside the card chooses
+         the section.
+
+         THE PUBLIC FRAME, WHICH IS NOT BUILT YET.
+         When the tokenised link exists it renders the client views and nothing
+         else: no rail, no account menu, no rendering switch, no page status, no
+         pencil, no provenance line and no held slot. That is why the client
+         views below carry no partner material and no authoring instruction, and
+         why the two readings are written out separately rather than one mixed
+         set with partner sections hidden. There is no route from the client set
+         to the partner set. -->
+    <main class="workspace">
+      <div class="stagepad">
+
+        <div class="screenhead">
+          <div class="headcopy">
+            <h1>Equip your partners to introduce this work</h1>
+            <div class="headfoot">
+              <p class="sub">One solution page for the Partnership Architecture Workshop, written once and rendered for a client and for a partner.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE LEVEL SWITCHER. Above the working area, .switch with .swpill,
+             active white with the brand blue ring. It chooses the rendering,
+             and it belongs to the product: the public frame has no switch. -->
+        <div class="switch authoring" role="tablist" aria-label="Rendering of this solution page">
+          <button class="swpill on" role="tab" aria-selected="true"  data-aud="client">For clients</button>
+          <button class="swpill"    role="tab" aria-selected="false" data-aud="partner">For partners</button>
+        </div>
+
+        <!-- THE OPERATOR STATUS LINE. Ruled by Lens, 20 September: gold is fully
+             out of the cream artefact, navigation dots included, and one line
+             outside the document names the sections still waiting on judgement.
+             Gold means captured, needs your judgement. That judgement is the
+             firm's and never the client's, so it has no place on the page a
+             client reads, at any size. This line and the sources drawer are the
+             whole of the status system now. -->
+        <div class="audblock judgestrip authoring" data-aud="client" data-active>
+          <div class="jrow">
+            <span class="state judge"><i></i>Waiting on your judgement</span>
+            <button type="button" class="jchip" data-go="helps">What it helps with</button>
+            <button type="button" class="jchip" data-go="who">Who it's for</button>
+            <button type="button" class="jchip" data-go="changes">What changes</button>
+            <button type="button" class="jchip" data-go="process">The process</button>
+            <button type="button" class="srclink" data-src>View sources</button>
+          </div>
+          <p class="jnote">A client quote and two links are still yours to supply. The award wording is awaiting your verification.</p>
+        </div>
+        <div class="audblock judgestrip authoring" data-aud="partner">
+          <div class="jrow">
+            <span class="state judge"><i></i>Waiting on your judgement</span>
+            <button type="button" class="jchip" data-go="helps">What it helps with</button>
+            <button type="button" class="jchip" data-go="how">How it works</button>
+            <button type="button" class="srclink" data-src>View sources</button>
+          </div>
+          <p class="jnote">In Make an introduction, six of the eight archetype answers are drafted. The standing description is drafted from Exercise 2.</p>
+        </div>
+
+        <!-- ============ THE SOLUTION PAGE, the one card on this screen ============ -->
+        <section class="artefact" id="solution">
+
+          <div class="artstrap" id="strap">Emple Australia &middot; Solution page</div>
+          <div class="arthead"><h2>Partnership Architecture Workshop</h2></div>
+
+          <!-- DOCUMENT SECTION NAVIGATION, inside the card, below the navy header.
+               The chip sets differ because the reader's job differs. -->
+          <div class="docnav" data-aud="client" role="tablist" aria-label="Sections, client reading">
+            <button class="docpill on" role="tab" aria-selected="true"  data-go="helps">What it helps with</button>
+            <button class="docpill"    role="tab" aria-selected="false" data-go="who">Who it's for</button>
+            <button class="docpill"    role="tab" aria-selected="false" data-go="changes">What changes</button>
+            <button class="docpill"    role="tab" aria-selected="false" data-go="evidence">Evidence</button>
+            <button class="docpill"    role="tab" aria-selected="false" data-go="process">The process</button>
+          </div>
+
+          <div class="docnav" data-aud="partner" role="tablist" aria-label="Sections, partner reading" hidden>
+            <button class="docpill on" role="tab" aria-selected="true"  data-go="helps">What it helps with</button>
+            <button class="docpill"    role="tab" aria-selected="false" data-go="who">Who it's for</button>
+            <button class="docpill"    role="tab" aria-selected="false" data-go="notice">What to notice</button>
+            <button class="docpill"    role="tab" aria-selected="false" data-go="how">How it works</button>
+            <button class="docpill"    role="tab" aria-selected="false" data-go="intro">Make an introduction</button>
+          </div>
+
+          <div class="artbody" id="docbody">
+
+            <!-- ============== THE STANDING DESCRIPTION AND THE TIMEFRAME ==============
+                 Outside the five sections, because it belongs to the document
+                 rather than to any one of them. A reader's first question after
+                 the title is how long this takes, and it is answered here so
+                 that the process can get on with explaining what happens during
+                 those weeks. NINTH PASS: it now heads both renderings. A partner
+                 is asked how long the work takes as often as a client is, so the
+                 answer sits above the sections in the partner reading too. It is
+                 written out once per reading rather than shared, which keeps the
+                 two readings separate and keeps partner wording out of reach of
+                 the public frame. -->
+            <div class="audblock" data-aud="client" data-active>
+              <div class="lede editable">
+                <button class="pen authoring" type="button" title="Rewrite this"><svg><use href="#i-pen"/></svg></button>
+                <p class="ledeline" data-field>The Partnership Architecture Workshop establishes whether partnerships are a growth channel worth building for you, and which partners to approach.</p>
+                <div class="ledemeta">
+                  <span class="dur">Typical timeframe: <span class="mono" data-field>4 to 6 weeks</span></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="audblock" data-aud="partner">
+              <div class="lede editable">
+                <button class="pen authoring" type="button" title="Rewrite this"><svg><use href="#i-pen"/></svg></button>
+                <p class="ledeline" data-field>The Partnership Architecture Workshop establishes whether partnerships are a growth channel worth building for a business, and which partners it should approach.</p>
+                <div class="ledemeta">
+                  <span class="dur">Typical timeframe: <span class="mono" data-field>4 to 6 weeks</span></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ==================================================================
+                 THE CLIENT READING.
+                 Five sections: what it helps with, who it's for, what changes,
+                 evidence, the process. This is the publishable reading and it is
+                 what the tokenised link will render. Nothing below names a
+                 partner profession, a partner archetype or the mechanics of an
+                 introduction, because a client is not the reader of any of that.
+
+                 VOICE. The confirmed third person material is rendered here in
+                 the second person, because this is the page a client reads. The
+                 conversion is presentation and not mutation: the Exercise 2
+                 sentence behind each line is unchanged and still quoted word for
+                 word in the sources drawer. Every converted line is therefore
+                 drafted and wears the gold judgement mark until Lila accepts it.
+
+                 COMPOSITION. Each section is built to the recorded field to
+                 section table and given one dominant visual idea, so that the
+                 five sections do not read as five identical lists. The idea is
+                 always typography, spacing or arrangement. No section invents a
+                 card or a container, and the section heading states the meaning
+                 of the section rather than repeating the chip above it.
+                 ================================================================== -->
+
+            <!-- ---- CLIENT: WHAT IT HELPS WITH.
+                 Fed by Exercise 2 "What it helps clients do", with "When it
+                 becomes relevant" as the problem framing.
+                 DOMINANT IDEA: one framing sentence in emphasis type, then
+                 prose. No list anywhere in the section. ---- -->
+            <div class="view" data-aud="client" data-sec="helps" data-active>
+
+              <div class="gsection editable">
+                <button class="pen authoring" type="button" title="Rewrite this"><svg><use href="#i-pen"/></svg></button>
+                <div class="ghead">
+                  <span class="iconchip"><svg class="ic" viewBox="0 0 24 24"><use href="#i-mark"/></svg></span>
+                  <span class="slab">When marketing is not bringing you the right clients</span>
+                </div>
+                <p class="framing" data-field>Use this work when traditional marketing is producing too few of the right clients, or when referrals matter to you but arrive inconsistently.</p>
+                <div class="prose">
+                  <p data-field>The workshop tests whether partnerships could close that gap, what they could produce for you, how long it may take and which relationships are worth pursuing.</p>
+                  <p data-field>You know whether the channel is worth investing in, and why.</p>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- ---- CLIENT: WHO IT'S FOR.
+                 Fed by Exercise 2 "Who it helps", both halves, including where
+                 the fit is weaker.
+                 DOMINANT IDEA: two facing columns, the weaker side set quiet. ---- -->
+            <div class="view" data-aud="client" data-sec="who">
+
+              <div class="gsection editable">
+                <button class="pen authoring" type="button" title="Rewrite this"><svg><use href="#i-pen"/></svg></button>
+                <div class="ghead">
+                  <span class="iconchip"><svg class="ic" viewBox="0 0 24 24"><use href="#i-people"/></svg></span>
+                  <span class="slab">Where this work fits, and where it does not</span>
+                </div>
+                <div class="shift">
+                  <div>
+                    <p class="proplabel">A strong fit</p>
+                    <p class="fitlead" data-field>Established businesses in financial and professional services.</p>
+                    <ul>
+                      <li data-field>You already refer clients to trusted specialists.</li>
+                      <li data-field>You know complementary providers serving the same clients.</li>
+                      <li data-field>You can show a prospective partner a credible track record.</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p class="proplabel quiet">A weaker fit</p>
+                    <p class="fitlead quiet" data-field>Businesses less likely to benefit from this work.</p>
+                    <ul class="quiet">
+                      <li data-field>Too new to demonstrate a track record.</li>
+                      <li data-field>Rarely needing to refer clients elsewhere.</li>
+                      <li data-field>Not set up to collaborate with other providers.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- ---- CLIENT: WHAT CHANGES.
+                 Derived from the outcomes in "What it helps clients do", so the
+                 whole section is drafted.
+                 DOMINANT IDEA: statement and subline pairs, stacked with air. ---- -->
+            <div class="view" data-aud="client" data-sec="changes">
+
+              <div class="gsection editable">
+                <button class="pen authoring" type="button" title="Rewrite this"><svg><use href="#i-pen"/></svg></button>
+                <div class="ghead">
+                  <span class="iconchip"><svg class="ic" viewBox="0 0 24 24"><use href="#i-arrow"/></svg></span>
+                  <span class="slab">What you hold at the end of it</span>
+                </div>
+                <div class="gains">
+                  <div class="gain"><span class="gdot"></span><div><b data-field>A decision you can stand behind</b><span data-field>Whether partnerships are the right growth channel for your business, and the evidence the answer rests on.</span></div></div>
+                  <div class="gain"><span class="gdot"></span><div><b data-field>A realistic number, and a realistic timeframe</b><span data-field>The revenue partnerships can generate for you, and how long it takes to reach it.</span></div></div>
+                  <div class="gain"><span class="gdot"></span><div><b data-field>A shortlist worth working</b><span data-field>Which partners to approach, why each one is on the list, and what the relationship would ask of your team.</span></div></div>
+                  <div class="gain"><span class="gdot"></span><div><b data-field>An agreed picture of success</b><span data-field>What success looks like, and how you will know the channel is working.</span></div></div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- ---- CLIENT: EVIDENCE.
+                 Fed by the firm's own results, the approved testimonial and
+                 further information. Real evidence or nothing: a specification
+                 of the evidence a page ought to carry never renders here.
+                 DOMINANT IDEA: two large mono figures, then quiet supporting
+                 lines. These are the only enlarged numerals on the page. ---- -->
+            <div class="view" data-aud="client" data-sec="evidence">
+
+              <div class="gsection">
+                <div class="ghead">
+                  <span class="iconchip"><svg class="ic" viewBox="0 0 24 24"><use href="#i-star"/></svg></span>
+                  <span class="slab">Emple Australia's own record</span>
+                </div>
+                <div class="figs">
+                  <div class="fig">
+                    <span class="fignum mono">77%</span>
+                    <p>of our new clients come from partner referrals. It is the channel we rely on ourselves.</p>
+                  </div>
+                  <div class="fig">
+                    <span class="fignum mono">$5m+</span>
+                    <p>generated through our own partnerships.</p>
+                  </div>
+                </div>
+                <div class="credits">
+                  <p class="credit"><span class="cdot"></span><span>Silver Stevie Award, Sales Consulting Practice of the Year.</span></p>
+                  <p class="credit"><span class="cdot"></span><span>We built this channel for ourselves before offering the work to anyone else. We planted ours first.</span></p>
+                </div>
+
+                <!-- THE QUOTE WINDOW. Ruled client content by Lens on 20 September,
+                     not machinery, so the area stays in the document. What left it
+                     is the product state that was sitting inside: the gold approval
+                     pill and the instruction telling the firm how to choose an
+                     account. Those are now carried once in the operator line
+                     outside the card. The window is empty until an approved quote
+                     exists. No quote is invented and no person is named. -->
+                <div class="said empty authoring">
+                  <span class="qbar"></span>
+                  <div>
+                    <p>A client quote sits here once one is approved.</p>
+                    <button type="button" class="addctl">Add a quote</button>
+                  </div>
+                </div>
+
+                <!-- LEARN MORE. Publicly resolvable links only: the sendable page
+                     opens for someone who is not signed in, so a link into the
+                     product would fail in their hands. Ruled client content, with
+                     the gold "Link to supply" pill replaced by a restrained
+                     control, per Prism. -->
+                <div class="further authoring">
+                  <p class="proplabel">Learn more</p>
+                  <p class="flink"><svg class="ic" viewBox="0 0 24 24"><use href="#i-link"/></svg><span>A public overview of the workshop on your own site</span><button type="button" class="addctl">Add link</button></p>
+                  <p class="flink"><svg class="ic" viewBox="0 0 24 24"><use href="#i-link"/></svg><span>A short introduction video, published so it opens without a sign in</span><button type="button" class="addctl">Add link</button></p>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- ---- CLIENT: THE PROCESS. Last section. Real step names from
+                 Emple Australia's own client journey, with the Partner
+                 Opportunity Session as the bridge step under its real name. The
+                 next step is the natural end of the process.
+                 DOMINANT IDEA: a numbered ladder with a linking accent. ---- -->
+            <div class="view" data-aud="client" data-sec="process">
+
+              <div class="gsection editable">
+                <button class="pen authoring" type="button" title="Rewrite this"><svg><use href="#i-pen"/></svg></button>
+                <div class="ghead">
+                  <span class="iconchip"><svg class="ic" viewBox="0 0 24 24"><use href="#i-steps"/></svg></span>
+                  <span class="slab">From the first conversation to partnerships that run</span>
+                </div>
+                <div class="steps">
+                  <p class="grouplab">This workshop</p>
+                  <div class="step"><span class="stepn mono">1</span><div><b>Discover and Qualify</b><p data-field>A short conversation about how your business grows today and whether a partnership strategy is worth your time.</p></div></div>
+                  <div class="step"><span class="stepn mono">2</span><div><b>Partner Opportunity Session</b><p data-field>The opportunity is sized with you: which partnerships are realistic, what they could be worth, and what they would ask of your team.</p></div></div>
+                  <div class="step"><span class="stepn mono">3</span><div><b>Partner Plan Workshop</b><p data-field>The strategy is set down in writing: which partners to approach and why, the revenue to expect, and what success looks like.</p></div></div>
+                  <p class="grouplab later">What can follow</p>
+                  <div class="step"><span class="stepn mono">4</span><div><b>Partner Suitcase and emPartner</b><p data-field>The material and the system your team uses to run the strategy, so the approach is held by the business rather than by one person.</p></div></div>
+                  <div class="step"><span class="stepn mono">5</span><div><b>Partner Circle</b><p data-field>Continuing support once the plan is in your hands, so the partnerships keep moving after the workshop.</p></div></div>
+                  <div class="step"><span class="stepn mono">6</span><div><b>Fractional Partnership Management</b><p data-field>Where you would rather the work was carried for you, the partnerships are managed alongside your team.</p></div></div>
+                </div>
+                <p class="quietline" data-field>We work with the people responsible for growth. The scope, effort and timing are agreed before each stage.</p>
+                <div class="nextstep">
+                  <svg class="ic" viewBox="0 0 24 24"><use href="#i-arrow"/></svg>
+                  <p data-field>If the first conversation confirms a fit, the next step is a Partner Opportunity Session. We will arrange a time that suits your team.</p>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- ==================================================================
+                 THE PARTNER READING.
+                 Five sections: what it helps with, who it's for, what to notice,
+                 how it works, make an introduction. Written out separately from
+                 the client reading rather than shared with it, so that the public
+                 frame has no path to any of this. The archetype case, the
+                 profession specific argument, the trigger language and the
+                 introduction mechanics live here and nowhere else.
+                 ================================================================== -->
+
+            <!-- ---- PARTNER: WHAT IT HELPS WITH ---- -->
+            <div class="view" data-aud="partner" data-sec="helps">
+
+              <div class="gsection">
+                <div class="ghead">
+                  <span class="iconchip"><svg class="ic" viewBox="0 0 24 24"><use href="#i-mark"/></svg></span>
+                  <span class="slab">What it helps with</span>
+                </div>
+                <ul>
+                  <li>The workshop helps businesses work out whether partnerships are right for them, what revenue they can realistically generate from them, how long it will take, what effort is involved, which partners to approach and why, and what success looks like, so they can pursue a partnership strategy with clarity about outcomes and benefits.</li>
+                  <li>It helps businesses turn referral partnerships into a consistent growth channel, replacing marketing that is not working with a better quality of leads.</li>
+                </ul>
+                <p class="heardline">This is the whole of it in two sentences. If a client of yours would be better off for hearing it, the rest of this reading tells you when and how.</p>
+              </div>
+
+            </div>
+
+            <!-- ---- PARTNER: WHO IT'S FOR ---- -->
+            <div class="view" data-aud="partner" data-sec="who">
+
+              <div class="gsection">
+                <div class="ghead">
+                  <span class="iconchip"><svg class="ic" viewBox="0 0 24 24"><use href="#i-people"/></svg></span>
+                  <span class="slab">Who it's for</span>
+                </div>
+                <ul>
+                  <li>It helps established businesses in financial and professional services that already refer clients out, have overlapping service providers in their networks, and can demonstrate a track record to prospective partners.</li>
+                </ul>
+                <p class="proplabel">Where the fit is weaker</p>
+                <ul>
+                  <li>Businesses that are less likely to benefit include those just starting out without social proof, those that provide all services in-house and have little need to refer clients elsewhere, and those that do not have a collaborative mindset.</li>
+                </ul>
+                <p class="heardline">Fit is the first thing to check. An introduction into a poor fit costs you more than the one you did not make.</p>
+              </div>
+
+            </div>
+
+            <!-- ---- PARTNER: WHAT TO NOTICE ---- -->
+            <div class="view" data-aud="partner" data-sec="notice">
+
+              <div class="gsection">
+                <div class="ghead">
+                  <span class="iconchip"><svg class="ic" viewBox="0 0 24 24"><use href="#i-ear"/></svg></span>
+                  <span class="slab">A partner is likely to hear things like</span>
+                </div>
+                <div class="saidstack">
+                  <span class="qbar"></span>
+                  <div class="lines">
+                    <p>Our marketing just isn't working</p>
+                    <p>We're getting tyre kickers, not the right clients</p>
+                    <p>The audience we need doesn't respond to marketing</p>
+                    <p>My referrals all depend on me and I want a more consistent way to grow</p>
+                    <p>We need to grow but I don't want lead generation relying on one person</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="gsection">
+                <div class="ghead">
+                  <span class="iconchip"><svg class="ic" viewBox="0 0 24 24"><use href="#i-flag"/></svg></span>
+                  <span class="slab">The moments that matter</span>
+                </div>
+                <ul>
+                  <li>A specific trigger is often a personnel change in the person responsible for referrals or networking, a growth target with a deadline, or a business setting its marketing budget or direction for the coming year.</li>
+                  <li>It also becomes pressing when a business is opening a new service area and needs partners to open doors to those markets.</li>
+                </ul>
+                <p class="proplabel">When it becomes relevant</p>
+                <ul>
+                  <li>It becomes relevant when marketing is not producing the right results, lead quality or conversion is low, the target audience does not respond to traditional marketing, or the business needs a more consistent and systematic way to grow.</li>
+                </ul>
+              </div>
+
+            </div>
+
+            <!-- ---- PARTNER: HOW IT WORKS. The same real journey the client reads,
+                 described so a partner can say what happens next. ---- -->
+            <div class="view" data-aud="partner" data-sec="how">
+
+              <div class="gsection editable">
+                <button class="pen authoring" type="button" title="Rewrite this"><svg><use href="#i-pen"/></svg></button>
+                <div class="ghead">
+                  <span class="iconchip"><svg class="ic" viewBox="0 0 24 24"><use href="#i-steps"/></svg></span>
+                  <span class="slab">How it works</span>
+                </div>
+                <ul>
+                  <li data-field><b>Discover and Qualify.</b> A short conversation about how the business grows today and whether the work is worth their time. Nothing is asked of them before that.</li>
+                  <li data-field><b>Partner Opportunity Session.</b> The bridge step. The opportunity is sized with them: which partnerships are realistic, what they could be worth, and what they would ask of the business.</li>
+                  <li data-field><b>Partner Plan Workshop.</b> The strategy is written down: the partners to approach and why, the revenue to expect, the time it will take and what success looks like.</li>
+                  <li data-field><b>Partner Suitcase and emPartner.</b> The material and the system their team uses to run the strategy, so the approach is held by the business rather than by one person.</li>
+                  <li data-field><b>Partner Circle.</b> Continuing support once the plan is in their hands, so the partnerships keep moving after the workshop.</li>
+                  <li data-field><b>Fractional Partnership Management.</b> Where the business would rather the work was carried for it, the partnerships are managed alongside their team.</li>
+                </ul>
+                <p class="heardline">Your client hears these stage names in the same order you do, so nothing you say here is contradicted later.</p>
+              </div>
+
+            </div>
+
+            <!-- ---- PARTNER: MAKE AN INTRODUCTION.
+                 Exercise 2 confirmed, the mechanics and the Accountants case
+                 drafted. The Exercise 3 archetype material lives here only. ---- -->
+            <div class="view" data-aud="partner" data-sec="intro">
+
+              <div class="gsection editable">
+                <button class="pen authoring" type="button" title="Rewrite this"><svg><use href="#i-pen"/></svg></button>
+                <div class="ghead">
+                  <span class="iconchip"><svg class="ic" viewBox="0 0 24 24"><use href="#i-arrow"/></svg></span>
+                  <span class="slab">When an introduction would help most</span>
+                </div>
+                <p class="quietline">Any sign of struggle with sales, marketing or lead quality is the moment to introduce the partnership approach, and the workshop can be valuable even before a business raises those issues directly, as most established businesses would benefit from knowing that referral partnerships can be systemised.</p>
+                <p class="proplabel">How the introduction is made</p>
+                <ul>
+                  <li data-field>Raise the workshop in the conversation where the issue surfaced, and offer to make the connection.</li>
+                  <li data-field>Send Emple Australia the business name and a line about what prompted it. You will hear back after the first conversation, and you will know what was agreed.</li>
+                </ul>
+                <!-- THE ACCOUNTANTS ARCHETYPE, REBUILT ON THE NINTH PASS.
+                     It was a four column slab, which Lens ruled a design break:
+                     the only four column arrangement on the surface and the
+                     densest thing in the set, so it spoke a different design
+                     language from the other nine sections. The content is kept
+                     whole and the geometry is calmed. It is now a two column
+                     labelled sequence in Exercise 3's own field order, at
+                     reading scale, with the breathing space the rest of the
+                     document gives a list. The two fields carried from Exercise
+                     3 stay confirmed and wear no mark; the six drafted fields
+                     keep the gold label and the gold dot. -->
+                <p class="proplabel arclabel">Accountants, the worked archetype, from Exercise 3</p>
+                <div class="arche">
+                  <div class="afield">
+                    <span class="aflabel">Why you matter to them</span>
+                    <p data-field>Clients ask them for growth advice they are not resourced to give.</p>
+                  </div>
+                  <div class="afield">
+                    <span class="aflabel">Why they matter to you</span>
+                    <p data-field>They sit across the finances of established firms and hear the growth question early.</p>
+                  </div>
+                  <div class="afield">
+                    <span class="aflabel">Triggers they encounter</span>
+                    <p>Marketing that is not producing the right results, low lead quality or conversion, an audience that does not respond to traditional marketing, and a business that needs a more consistent and systematic way to grow.</p>
+                  </div>
+                  <div class="afield">
+                    <span class="aflabel">What those moments cost the client</span>
+                    <p class="afsaid">Loss of revenue, an enormous amount of stress, loss of time, effort and energy, and an inability to realise their vision.</p>
+                  </div>
+                  <div class="afield">
+                    <span class="aflabel">How often they see it</span>
+                    <p data-field>In most annual and quarterly reviews, and reliably at budget setting.</p>
+                  </div>
+                  <div class="afield">
+                    <span class="aflabel">How close they are to the client</span>
+                    <p data-field>Long standing and trusted. The relationship often predates every other adviser.</p>
+                  </div>
+                  <div class="afield">
+                    <span class="aflabel">Can they act on it</span>
+                    <p data-field>Yes. A warm introduction sits inside the review conversation they already hold.</p>
+                  </div>
+                  <div class="afield">
+                    <span class="aflabel">What you can send them</span>
+                    <p data-field>The client reading of this page, which carries no partner material, and a note they can forward.</p>
+                  </div>
+                </div>
+                <p class="heardline">Lawyers, financial planners and business networking groups are named in your partner ecosystem and every field for them is still to be answered. The same eight questions apply to each one, and the wider list of partner types you have raised is held in Exercise 3 until you place it.</p>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- THE SOURCES DRAWER, product authoring layer only. Opened from a
+               View sources link and closed again when the firm is done. It is
+               never on screen beside the page, and the public frame has no such
+               link, because the client is the audience and not the author. -->
+          <aside class="srcpanel authoring" id="srcpanel" hidden aria-label="Where this section comes from">
+            <div class="srchead">Where this section comes from<button type="button" class="srcx" id="srcx">Close</button></div>
+            <div class="srcbody" id="srcbody">
+
+              <div class="view" data-aud="client" data-sec="helps" data-active>
+                <p class="srcitem"><b>Exercise 2, confirmed, when it becomes relevant</b>The framing sentence is this sentence of yours, rendered in the second person.
+                  <span class="srcq">It becomes relevant when marketing is not producing the right results, lead quality or conversion is low, the target audience does not respond to traditional marketing, or the business needs a more consistent and systematic way to grow.</span></p>
+                <p class="srcitem"><b>Exercise 2, confirmed, what it helps clients do</b>Both sentences are carried in full and turned into the second person.
+                  <span class="srcq">The workshop helps businesses work out whether partnerships are right for them, what revenue they can realistically generate from them, how long it will take, what effort is involved, which partners to approach and why, and what success looks like, so they can pursue a partnership strategy with clarity about outcomes and benefits.</span>
+                  <span class="srcq">It helps businesses turn referral partnerships into a consistent growth channel, replacing marketing that is not working with a better quality of leads.</span></p>
+                <p class="srcitem"><b>Why the section is marked drafted</b>Voice conversion is presentation, not mutation. Your sentence above is unchanged. The line a client reads is the product's wording of it, so it waits on your judgement until you accept it.</p>
+              </div>
+
+              <div class="view" data-aud="client" data-sec="who">
+                <p class="srcitem"><b>Exercise 2, confirmed, who it helps</b>Carried in full, turned into the second person and set out as a strong fit.
+                  <span class="srcq">It helps established businesses in financial and professional services that already refer clients out, have overlapping service providers in their networks, and can demonstrate a track record to prospective partners.</span></p>
+                <p class="srcitem"><b>Exercise 2, confirmed, where the fit is weaker</b>Carried in full and kept in the third person, because it describes businesses other than the reader.
+                  <span class="srcq">Businesses that are less likely to benefit include those just starting out without social proof, those that provide all services in-house and have little need to refer clients elsewhere, and those that do not have a collaborative mindset.</span></p>
+                <p class="srcitem"><b>Client reading only</b>Fit, and nothing else. The trigger language and the recognition cues stay in the partner reading, where the reader has a use for them.</p>
+              </div>
+
+              <div class="view" data-aud="client" data-sec="changes">
+                <p class="srcitem"><b>Drafted here</b>The four outcomes are derived from the outcomes named in the Exercise 2 sentence above, and from the further moments you recorded there, including promising partnership chats that lead to nothing and not knowing who to partner with. Nothing in this section is a quotation of yours.</p>
+                <p class="srcitem"><b>Client reading only</b>What changes is written for the business receiving the work, in their language.</p>
+              </div>
+
+              <div class="view" data-aud="client" data-sec="evidence">
+                <p class="srcitem"><b>Your own published record</b>Read on 20 September 2026. The chart of new client sources gives partner referrals at 77.1%, networking at 11.9% and client referrals at 11.0%, which is where the rounded figure comes from. The figure of more than $5m, the Silver Stevie Award for Sales Consulting Practice of the Year and the line about planting ours first are your own claims about your own firm.</p>
+                <p class="srcitem"><b>Real evidence, or nothing</b>A specification of the evidence a page ought to carry is authoring guidance. It is not evidence and it never renders in the client reading.</p>
+                <p class="srcitem"><b>The quote window</b>A testimonial requires recorded approval before it is published. The window is empty until you choose the account and record the client's approval, and the area is omitted altogether from the page a client receives.</p>
+                <p class="srcitem"><b>Further information</b>Only links that resolve publicly belong here, because the sendable page opens for someone who is not signed in. A link into the product would fail in a client's hands.</p>
+              </div>
+
+              <div class="view" data-aud="client" data-sec="process">
+                <p class="srcitem"><b>Your own client journey</b>Discover and Qualify, the Partner Opportunity Session, the Partner Plan Workshop, Partner Suitcase and emPartner, Partner Circle and Fractional Partnership Management. The step names are yours and they are used as you use them.</p>
+                <p class="srcitem"><b>Drafted here</b>What each stage involves, what to expect and the closing line. The Partner Opportunity Session is the bridge step, under its real name rather than a description of it.</p>
+                <p class="srcitem"><b>The timeframe</b>Typical timeframe, 4 to 6 weeks, sits above the sections and is drafted. It is not recorded in Exercise 2 or Exercise 6, so confirm or correct it before this page is sent.</p>
+                <p class="srcitem"><b>Exercise 8</b>When the exclusive offer exists it lands in this section, beside the next step.</p>
+              </div>
+
+              <div class="view" data-aud="partner" data-sec="helps">
+                <p class="srcitem"><b>Exercise 2, Referral Triggers</b>What it helps clients do, confirmed as written and carried word for word.</p>
+                <p class="srcitem"><b>Partner reading</b>The same two sentences a client reads, so a partner never describes the work differently from the way it is described to the business.</p>
+              </div>
+
+              <div class="view" data-aud="partner" data-sec="who">
+                <p class="srcitem"><b>Exercise 2, Referral Triggers</b>Who it helps, including where the fit is weaker. Confirmed as written.</p>
+                <p class="srcitem"><b>Partner reading</b>A partner needs the same picture of fit as a client, with the judgement about fit made explicit.</p>
+              </div>
+
+              <div class="view" data-aud="partner" data-sec="notice">
+                <p class="srcitem"><b>Exercise 2, Referral Triggers</b>What a partner might notice, the moments that matter, and when it becomes relevant. All confirmed as written.</p>
+                <p class="srcitem"><b>Partner reading only</b>Recognition cues are partner intelligence. They have no place on the reading a client receives.</p>
+              </div>
+
+              <div class="view" data-aud="partner" data-sec="how">
+                <p class="srcitem"><b>Your own client journey</b>The stage names are yours. What each stage involves is drafted.</p>
+                <p class="srcitem"><b>Partner reading</b>Described so a partner can answer what happens next, in the same order the client reads it.</p>
+              </div>
+
+              <div class="view" data-aud="partner" data-sec="intro">
+                <p class="srcitem"><b>Exercise 2, Referral Triggers</b>When an introduction would help most, confirmed as written.</p>
+                <p class="srcitem"><b>Exercise 3, Partner Ecosystem</b>The Accountants archetype. Two fields are carried from your own material; the remaining six are drafted and carry the gold label.</p>
+                <p class="srcitem"><b>Partner reading only</b>Profession specific argument belongs to the partner reading. Carrying it onto the client reading would quietly turn the page into the version for one profession.</p>
+                <p class="srcitem"><b>Still to be worked through</b>Lawyers, financial planners and business networking groups are named and unanswered. The other types your material has raised are held in Exercise 3.</p>
+              </div>
+
+            </div>
+          </aside>
+
+        </section>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ---- the Journey rail toggle, as the shell drives it ---- */
+  var rail = document.getElementById('rail');
+  var railToggle = document.getElementById('railToggle');
+  railToggle.addEventListener('click', function(){
+    var open = rail.classList.toggle('open');
+    railToggle.setAttribute('aria-expanded', String(open));
+    railToggle.setAttribute('aria-label', open ? 'Collapse the journey' : 'Expand the journey');
+  });
+
+  /* ---- one canonical solution truth, two explicit renderings ----
+     Every view is addressed by both its reading and its section. Nothing is
+     shared between the two readings and nothing is conditionally hidden inside
+     a shared block, so the public frame, which will render the client views
+     alone, cannot reach partner material by accident. */
+  var SECTIONS = {
+    client:  ['helps','who','changes','evidence','process'],
+    partner: ['helps','who','notice','how','intro']
+  };
+  var STRAP = {
+    client:  'Emple Australia · Solution page',
+    partner: 'Emple Australia · Solution page, for partners'
+  };
+
+  var swpills = [].slice.call(document.querySelectorAll('.swpill'));
+  var navs    = [].slice.call(document.querySelectorAll('.docnav'));
+  var views   = [].slice.call(document.querySelectorAll('.view'));
+  /* the standing description and the timeframe, one block per reading, outside
+     the five sections and so addressed by reading alone */
+  var audblocks = [].slice.call(document.querySelectorAll('.audblock'));
+  var strap   = document.getElementById('strap');
+  var panel   = document.getElementById('srcpanel');
+  var aud = 'client', sec = 'helps';
+
+  function render(){
+    strap.textContent = STRAP[aud];
+    swpills.forEach(function(p){
+      var on = p.dataset.aud === aud;
+      p.classList.toggle('on', on);
+      p.setAttribute('aria-selected', String(on));
+    });
+    navs.forEach(function(n){
+      var on = n.dataset.aud === aud;
+      n.hidden = !on;
+      [].forEach.call(n.querySelectorAll('.docpill'), function(p){
+        var sel = p.dataset.go === sec;
+        p.classList.toggle('on', sel);
+        p.setAttribute('aria-selected', String(sel));
+      });
+    });
+    audblocks.forEach(function(b){
+      if (b.dataset.aud === aud) b.setAttribute('data-active','');
+      else b.removeAttribute('data-active');
+    });
+    jchips.forEach(function(c){
+      c.classList.toggle('on', c.dataset.go === sec);
+    });
+    views.forEach(function(v){
+      if (v.dataset.aud === aud && v.dataset.sec === sec) v.setAttribute('data-active','');
+      else v.removeAttribute('data-active');
+    });
+    document.getElementById('srcbody').scrollTop = 0;
+    panel.hidden = true;
+  }
+
+  swpills.forEach(function(p){
+    p.addEventListener('click', function(){
+      aud = p.dataset.aud;
+      /* stay on the same section name when the other reading also has one */
+      if (SECTIONS[aud].indexOf(sec) === -1) sec = SECTIONS[aud][0];
+      closeAll();
+      render();
+    });
+  });
+  navs.forEach(function(n){
+    n.addEventListener('click', function(e){
+      var p = e.target.closest('.docpill');
+      if (!p) return;
+      sec = p.dataset.go;
+      closeAll();
+      render();
+    });
+  });
+
+  /* the operator status line names the sections still waiting, and naming them
+     is only useful if it also takes you to them */
+  var jchips = [].slice.call(document.querySelectorAll('.jchip'));
+  jchips.forEach(function(c){
+    c.addEventListener('click', function(){
+      sec = c.dataset.go;
+      closeAll();
+      render();
+    });
+  });
+
+  /* ---- the sources drawer, on request only, product layer ---- */
+  document.addEventListener('click', function(e){
+    if (e.target.closest('[data-src]')){ panel.hidden = false; return; }
+    if (e.target.closest('#srcx')){ panel.hidden = true; return; }
+  });
+
+  /* ---- the pencil, on the drafted blocks ---- */
+  function fields(block){ return [].slice.call(block.querySelectorAll('[data-field]')); }
+  function closeAll(){ [].forEach.call(document.querySelectorAll('.editable.open'), function(b){ close(b, false); }); }
+
+  function close(block, restore){
+    fields(block).forEach(function(f){
+      if (restore && f.dataset.original != null) f.innerHTML = f.dataset.original;
+      f.removeAttribute('contenteditable');
+    });
+    block.classList.remove('open');
+    var row = block.querySelector('.editrow');
+    if (row) row.remove();
+  }
+
+  function open(block){
+    closeAll();
+    block.classList.add('open');
+    var fs = fields(block);
+    fs.forEach(function(f){
+      if (f.dataset.original == null) f.dataset.original = f.innerHTML;
+      f.setAttribute('contenteditable','true');
+    });
+    var row = document.createElement('div');
+    row.className = 'editrow';
+    row.innerHTML = '<button type="button" class="keep" data-keep>Keep this</button>'
+                  + '<button type="button" data-restore>Restore the original</button>';
+    block.appendChild(row);
+    if (fs[0]) fs[0].focus();
+  }
+
+  document.addEventListener('click', function(e){
+    var pen = e.target.closest('.pen');
+    if (pen){
+      e.preventDefault();
+      var block = pen.closest('.editable');
+      block.classList.contains('open') ? close(block, false) : open(block);
+      return;
+    }
+    if (e.target.closest('[data-keep]'))    { close(e.target.closest('.editable'), false); return; }
+    if (e.target.closest('[data-restore]')) { close(e.target.closest('.editable'), true);  return; }
+  });
+
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape'){
+      if (!panel.hidden){ panel.hidden = true; return; }
+      closeAll();
+    }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
